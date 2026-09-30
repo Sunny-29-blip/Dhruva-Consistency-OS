@@ -1,0 +1,1 @@
+- [Generated client compatibility](generated-client-compatibility.md) — keep DOM iterable types enabled and avoid Orval delete-parameter collisions.

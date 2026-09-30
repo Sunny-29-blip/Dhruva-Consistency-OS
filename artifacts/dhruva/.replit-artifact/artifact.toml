@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Dhruva"
+description = "A calm, data-grounded consistency operating system for people who want to follow through on goals, habits, and daily actions."
+version = "1.0.0"
+id = "artifacts/dhruva"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21747
+
+[services.development]
+run = "pnpm --filter @workspace/dhruva run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/dhruva", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/dhruva/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21747"
+BASE_PATH = "/"

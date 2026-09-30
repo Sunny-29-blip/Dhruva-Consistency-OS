@@ -3,13 +3,24 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Dhruva consistency operating system API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+  - name: onboarding
+  - name: profile
+  - name: dashboard
+  - name: domains
+  - name: goals
+  - name: habits
+  - name: todos
+  - name: checkins
+  - name: stats
+  - name: ai
 paths:
   /healthz:
     get:
@@ -24,7 +35,498 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /auth/me:
+    get:
+      operationId: getCurrentUser
+      tags: [auth]
+      summary: Get the signed-in user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentUser"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Signed-in user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentUser"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: Created user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentUser"
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      responses:
+        "204":
+          description: Signed out
+  /profile:
+    get:
+      operationId: getProfile
+      tags: [profile]
+      responses:
+        "200":
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+    patch:
+      operationId: updateProfile
+      tags: [profile]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileUpdate"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+  /onboarding:
+    post:
+      operationId: completeOnboarding
+      tags: [onboarding]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OnboardingInput"
+      responses:
+        "200":
+          description: Completed profile and starter system
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OnboardingResult"
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [dashboard]
+      responses:
+        "200":
+          description: Today overview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dashboard"
+  /domains:
+    get:
+      operationId: listDomains
+      tags: [domains]
+      responses:
+        "200":
+          description: User domains
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Domain"
+    post:
+      operationId: createDomain
+      tags: [domains]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DomainInput"
+      responses:
+        "201":
+          description: Created domain
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Domain"
+  /goals:
+    get:
+      operationId: listGoals
+      tags: [goals]
+      responses:
+        "200":
+          description: User goals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Goal"
+    post:
+      operationId: createGoal
+      tags: [goals]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoalInput"
+      responses:
+        "201":
+          description: Created goal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Goal"
+  /goals/{id}:
+    get:
+      operationId: getGoal
+      tags: [goals]
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Goal detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GoalDetail"
+  /habits:
+    get:
+      operationId: listHabits
+      tags: [habits]
+      parameters:
+        - name: archived
+          in: query
+          schema:
+            type: boolean
+            default: false
+        - name: domainId
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: User habits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Habit"
+    post:
+      operationId: createHabit
+      tags: [habits]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HabitInput"
+      responses:
+        "201":
+          description: Created habit
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Habit"
+  /habits/{id}:
+    get:
+      operationId: getHabit
+      tags: [habits]
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Habit detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HabitDetail"
+    patch:
+      operationId: updateHabit
+      tags: [habits]
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HabitUpdate"
+      responses:
+        "200":
+          description: Updated habit
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Habit"
+  /todos:
+    get:
+      operationId: listTodos
+      tags: [todos]
+      parameters:
+        - name: view
+          in: query
+          schema:
+            type: string
+            enum: [inbox, today, upcoming, completed]
+            default: today
+      responses:
+        "200":
+          description: Todo list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Todo"
+    post:
+      operationId: createTodo
+      tags: [todos]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TodoInput"
+      responses:
+        "201":
+          description: Created todo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+  /todos/{id}:
+    patch:
+      operationId: updateTodo
+      tags: [todos]
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TodoUpdate"
+      responses:
+        "200":
+          description: Updated todo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+  /habits/{id}/checkins:
+    post:
+      operationId: createCheckin
+      tags: [checkins]
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckinInput"
+      responses:
+        "200":
+          description: Updated habit check-in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Checkin"
+  /mood:
+    post:
+      operationId: saveMood
+      tags: [checkins]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MoodInput"
+      responses:
+        "200":
+          description: Saved mood log
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MoodLog"
+  /stats/overview:
+    get:
+      operationId: getStatsOverview
+      tags: [stats]
+      responses:
+        "200":
+          description: Consistency overview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatsOverview"
+  /stats/trend:
+    get:
+      operationId: getStatsTrend
+      tags: [stats]
+      parameters:
+        - name: days
+          in: query
+          schema:
+            type: integer
+            enum: [30, 90]
+            default: 30
+      responses:
+        "200":
+          description: Daily consistency trend
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TrendPoint"
+  /stats/domains:
+    get:
+      operationId: getDomainStats
+      tags: [stats]
+      responses:
+        "200":
+          description: Domain consistency rates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DomainStat"
+  /stats/leaderboard:
+    get:
+      operationId: getHabitLeaderboard
+      tags: [stats]
+      responses:
+        "200":
+          description: Habit performance leaderboard
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HabitLeaderboardRow"
+  /stats/heatmap:
+    get:
+      operationId: getHeatmap
+      tags: [stats]
+      responses:
+        "200":
+          description: Last 371 days
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HeatmapCell"
+  /ai/briefing:
+    get:
+      operationId: getBriefing
+      tags: [ai]
+      responses:
+        "200":
+          description: Data-grounded daily briefing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Briefing"
+  /ai/diagnosis:
+    post:
+      operationId: createDiagnosis
+      tags: [ai]
+      responses:
+        "200":
+          description: Consistency diagnosis
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Diagnosis"
+  /ai/recommendations:
+    get:
+      operationId: listRecommendations
+      tags: [ai]
+      responses:
+        "200":
+          description: Open recommendations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Recommendation"
+  /ai/recommendations/{id}/accept:
+    post:
+      operationId: acceptRecommendation
+      tags: [ai]
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Accepted recommendation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recommendation"
+  /ai/recommendations/{id}/dismiss:
+    post:
+      operationId: dismissRecommendation
+      tags: [ai]
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Dismissed recommendation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recommendation"
 components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    Unauthenticated:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
   schemas:
     HealthStatus:
       type: object
@@ -33,4 +535,367 @@ components:
           type: string
       required:
         - status
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string }
+            message: { type: string }
+    CurrentUser:
+      type: object
+      required: [id, email, displayName, onboardingCompleted]
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        displayName: { type: string }
+        onboardingCompleted: { type: boolean }
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, minLength: 8 }
+    RegisterInput:
+      type: object
+      required: [displayName, email, password, confirmPassword]
+      properties:
+        displayName: { type: string, minLength: 1, maxLength: 60 }
+        email: { type: string, format: email }
+        password: { type: string, minLength: 8 }
+        confirmPassword: { type: string, minLength: 8 }
+    Profile:
+      type: object
+      required: [displayName, timezone, coachingTone, onboardingCompleted]
+      properties:
+        displayName: { type: string }
+        timezone: { type: string }
+        weekStartsOn: { type: integer, enum: [0, 1] }
+        coachingTone: { type: string, enum: [encouraging, direct, analytical] }
+        onboardingCompleted: { type: boolean }
+        notificationHour: { type: integer, minimum: 0, maximum: 23 }
+    ProfileUpdate:
+      type: object
+      properties:
+        displayName: { type: string, minLength: 1, maxLength: 60 }
+        timezone: { type: string }
+        weekStartsOn: { type: integer, enum: [0, 1] }
+        coachingTone: { type: string, enum: [encouraging, direct, analytical] }
+        notificationHour: { type: integer, minimum: 0, maximum: 23 }
+    OnboardingInput:
+      type: object
+      required: [displayName, timezone, primaryDomainKeys, minutesWeekday, minutesWeekend, wakeTime, sleepTime, consistencyKiller, coachingTone, northStar]
+      properties:
+        displayName: { type: string, minLength: 1, maxLength: 60 }
+        timezone: { type: string }
+        weekStartsOn: { type: integer, enum: [0, 1], default: 1 }
+        primaryDomainKeys:
+          type: array
+          minItems: 2
+          maxItems: 4
+          items: { type: string }
+        minutesWeekday: { type: integer, minimum: 15, maximum: 240 }
+        minutesWeekend: { type: integer, minimum: 15, maximum: 360 }
+        wakeTime: { type: string, pattern: "^\\d{2}:\\d{2}$" }
+        sleepTime: { type: string, pattern: "^\\d{2}:\\d{2}$" }
+        consistencyKiller: { type: string }
+        coachingTone: { type: string, enum: [encouraging, direct, analytical] }
+        northStar: { type: string, minLength: 1, maxLength: 280 }
+    OnboardingResult:
+      type: object
+      required: [profile, goal, habits, todos]
+      properties:
+        profile: { $ref: "#/components/schemas/Profile" }
+        goal: { $ref: "#/components/schemas/Goal" }
+        habits:
+          type: array
+          items: { $ref: "#/components/schemas/Habit" }
+        todos:
+          type: array
+          items: { $ref: "#/components/schemas/Todo" }
+    Domain:
+      type: object
+      required: [id, key, name, description, icon, hue, isSystem, isArchived]
+      properties:
+        id: { type: string, format: uuid }
+        key: { type: string }
+        name: { type: string }
+        description: { type: string }
+        icon: { type: string }
+        hue: { type: string }
+        isSystem: { type: boolean }
+        isArchived: { type: boolean }
+    DomainInput:
+      type: object
+      required: [name, icon, hue]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 40 }
+        icon: { type: string }
+        hue: { type: string }
+    Goal:
+      type: object
+      required: [id, title, domainId, status, openTodoCount, habitCount]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        description: { type: ["string", "null"] }
+        domainId: { type: string, format: uuid }
+        targetDate: { type: ["string", "null"], format: date }
+        status: { type: string, enum: [active, paused, achieved, abandoned] }
+        successCriteria: { type: ["string", "null"] }
+        openTodoCount: { type: integer }
+        habitCount: { type: integer }
+    GoalInput:
+      type: object
+      required: [title, domainId]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 120 }
+        description: { type: string }
+        domainId: { type: string, format: uuid }
+        targetDate: { type: string, format: date }
+        successCriteria: { type: string }
+    GoalDetail:
+      allOf:
+        - $ref: "#/components/schemas/Goal"
+        - type: object
+          required: [habits, todos]
+          properties:
+            habits:
+              type: array
+              items: { $ref: "#/components/schemas/Habit" }
+            todos:
+              type: array
+              items: { $ref: "#/components/schemas/Todo" }
+    Habit:
+      type: object
+      required: [id, title, domainId, type, frequency, timeOfDay, difficulty, isArchived, targetValue, unit, streak, rate7d, rate30d, todayCompleted]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        notes: { type: ["string", "null"] }
+        domainId: { type: string, format: uuid }
+        goalId: { type: ["string", "null"], format: uuid }
+        type: { type: string, enum: [binary, quantitative, duration] }
+        targetValue: { type: ["number", "null"] }
+        unit: { type: ["string", "null"] }
+        frequency: { type: string, enum: [daily, weekdays, custom_days, times_per_week] }
+        customDays: { type: array, items: { type: integer } }
+        timesPerWeek: { type: ["integer", "null"] }
+        timeOfDay: { type: string, enum: [morning, midday, evening, anytime] }
+        difficulty: { type: string, enum: [starter, standard, stretch] }
+        isArchived: { type: boolean }
+        startDate: { type: string, format: date }
+        streak: { type: integer }
+        rate7d: { type: ["number", "null"] }
+        rate30d: { type: ["number", "null"] }
+        todayCompleted: { type: boolean }
+        lastCheckinDate: { type: ["string", "null"], format: date }
+    HabitInput:
+      type: object
+      required: [title, domainId, type, frequency, timeOfDay, difficulty, startDate]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 120 }
+        notes: { type: string, maxLength: 500 }
+        domainId: { type: string, format: uuid }
+        goalId: { type: string, format: uuid }
+        type: { type: string, enum: [binary, quantitative, duration] }
+        targetValue: { type: number, minimum: 1 }
+        unit: { type: string, maxLength: 20 }
+        frequency: { type: string, enum: [daily, weekdays, custom_days, times_per_week] }
+        customDays: { type: array, items: { type: integer, minimum: 1, maximum: 7 } }
+        timesPerWeek: { type: integer, minimum: 1, maximum: 6 }
+        timeOfDay: { type: string, enum: [morning, midday, evening, anytime] }
+        difficulty: { type: string, enum: [starter, standard, stretch] }
+        startDate: { type: string, format: date }
+    HabitUpdate:
+      allOf:
+        - $ref: "#/components/schemas/HabitInput"
+        - type: object
+          properties:
+            isArchived: { type: boolean }
+    HabitDetail:
+      allOf:
+        - $ref: "#/components/schemas/Habit"
+        - type: object
+          required: [checkins, heatmap]
+          properties:
+            checkins:
+              type: array
+              items: { $ref: "#/components/schemas/Checkin" }
+            heatmap:
+              type: array
+              items: { $ref: "#/components/schemas/HeatmapCell" }
+    Todo:
+      type: object
+      required: [id, title, priority, status, isRitual, sortOrder]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        notes: { type: ["string", "null"] }
+        domainId: { type: ["string", "null"], format: uuid }
+        goalId: { type: ["string", "null"], format: uuid }
+        habitId: { type: ["string", "null"], format: uuid }
+        dueDate: { type: ["string", "null"], format: date }
+        dueTime: { type: ["string", "null"] }
+        priority: { type: string, enum: [p1, p2, p3] }
+        status: { type: string, enum: [open, completed, cancelled] }
+        isRitual: { type: boolean }
+        sortOrder: { type: integer }
+    TodoInput:
+      type: object
+      required: [title]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 200 }
+        notes: { type: string, maxLength: 500 }
+        domainId: { type: string, format: uuid }
+        goalId: { type: string, format: uuid }
+        habitId: { type: string, format: uuid }
+        dueDate: { type: string, format: date }
+        dueTime: { type: string }
+        priority: { type: string, enum: [p1, p2, p3], default: p2 }
+        isRitual: { type: boolean, default: false }
+    TodoUpdate:
+      type: object
+      properties:
+        title: { type: string, minLength: 1, maxLength: 200 }
+        status: { type: string, enum: [open, completed, cancelled] }
+        dueDate: { type: ["string", "null"], format: date }
+        priority: { type: string, enum: [p1, p2, p3] }
+        sortOrder: { type: integer }
+    CheckinInput:
+      type: object
+      required: [date]
+      properties:
+        date: { type: string, format: date }
+        value: { type: number, minimum: 0, default: 1 }
+        note: { type: string, maxLength: 280 }
+    Checkin:
+      type: object
+      required: [id, habitId, date, value]
+      properties:
+        id: { type: string, format: uuid }
+        habitId: { type: string, format: uuid }
+        date: { type: string, format: date }
+        value: { type: number }
+        note: { type: ["string", "null"] }
+    MoodInput:
+      type: object
+      required: [date, mood, energy]
+      properties:
+        date: { type: string, format: date }
+        mood: { type: integer, minimum: 1, maximum: 5 }
+        energy: { type: integer, minimum: 1, maximum: 5 }
+        note: { type: string, maxLength: 280 }
+    MoodLog:
+      allOf:
+        - $ref: "#/components/schemas/MoodInput"
+        - type: object
+          required: [id]
+          properties:
+            id: { type: string, format: uuid }
+    StatsOverview:
+      type: object
+      required: [score, rate7d, rate30d, rate90d, currentStreak, longestStreak, volatility]
+      properties:
+        score: { type: ["integer", "null"], minimum: 0, maximum: 100 }
+        rate7d: { type: ["number", "null"] }
+        rate30d: { type: ["number", "null"] }
+        rate90d: { type: ["number", "null"] }
+        currentStreak: { type: integer }
+        longestStreak: { type: integer }
+        volatility: { type: number }
+        scheduledToday: { type: integer }
+        completedToday: { type: integer }
+    TrendPoint:
+      type: object
+      required: [date, rate, rollingRate, completed, scheduled]
+      properties:
+        date: { type: string, format: date }
+        rate: { type: ["number", "null"] }
+        rollingRate: { type: ["number", "null"] }
+        completed: { type: integer }
+        scheduled: { type: integer }
+    DomainStat:
+      type: object
+      required: [domainId, name, hue, rate30d]
+      properties:
+        domainId: { type: string, format: uuid }
+        name: { type: string }
+        hue: { type: string }
+        rate30d: { type: number }
+    HabitLeaderboardRow:
+      type: object
+      required: [habitId, habitTitle, domainName, rate7d, rate30d, currentStreak, longestStreak]
+      properties:
+        habitId: { type: string, format: uuid }
+        habitTitle: { type: string }
+        domainName: { type: string }
+        rate7d: { type: ["number", "null"] }
+        rate30d: { type: ["number", "null"] }
+        currentStreak: { type: integer }
+        longestStreak: { type: integer }
+        lastMissDate: { type: ["string", "null"], format: date }
+    HeatmapCell:
+      type: object
+      required: [date, completed, scheduled, rate]
+      properties:
+        date: { type: string, format: date }
+        completed: { type: integer }
+        scheduled: { type: integer }
+        rate: { type: ["number", "null"] }
+    Dashboard:
+      type: object
+      required: [profile, stats, habits, todos, briefing]
+      properties:
+        profile: { $ref: "#/components/schemas/Profile" }
+        stats: { $ref: "#/components/schemas/StatsOverview" }
+        habits:
+          type: array
+          items: { $ref: "#/components/schemas/Habit" }
+        todos:
+          type: array
+          items: { $ref: "#/components/schemas/Todo" }
+        briefing: { $ref: "#/components/schemas/Briefing" }
+    Briefing:
+      type: object
+      required: [id, source, headline, body, focus, actions, generatedAt]
+      properties:
+        id: { type: string, format: uuid }
+        source: { type: string, enum: [gemini, fallback] }
+        headline: { type: string }
+        body: { type: string }
+        focus: { type: string }
+        actions:
+          type: array
+          items: { type: string }
+        generatedAt: { type: string, format: date-time }
+    Diagnosis:
+      type: object
+      required: [id, source, headline, evidence, causes, experiment]
+      properties:
+        id: { type: string, format: uuid }
+        source: { type: string, enum: [gemini, fallback] }
+        headline: { type: string }
+        evidence:
+          type: array
+          items: { type: string }
+        causes:
+          type: array
+          items: { type: string }
+        experiment: { type: string }
+    Recommendation:
+      type: object
+      required: [id, kind, title, rationale, status, payload]
+      properties:
+        id: { type: string, format: uuid }
+        kind: { type: string, enum: [habit, todo, freeze, focus] }
+        title: { type: string }
+        rationale: { type: string }
+        status: { type: string, enum: [open, accepted, dismissed, expired] }
+        payload:
+          type: object
+          additionalProperties: true
 

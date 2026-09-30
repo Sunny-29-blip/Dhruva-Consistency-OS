@@ -1,6 +1,6 @@
-# [Project name]
+# Dhruva
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Dhruva is an AI-powered consistency operating system for goals, habits, daily tasks, and data-grounded coaching.
 
 ## Run & Operate
 
@@ -22,15 +22,20 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/dhruva` — React/Vite web app and responsive product UI.
+- `artifacts/api-server` — Express API, session auth, deterministic stats, and coaching fallback routes.
+- `lib/api-spec/openapi.yaml` — API contract source of truth.
+- `lib/db/src/schema/dhruva.ts` — relational PostgreSQL schema.
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- OpenAPI is generated before frontend work so the React app consumes typed hooks from the shared client.
+- Server sessions use PostgreSQL via `connect-pg-simple`; password auth is bcryptjs with cost 12.
+- Coaching returns an explicit deterministic fallback when an AI provider is unavailable rather than pretending model output exists.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Dhruva includes marketing, auth, onboarding, Today, task views, habit and goal management, consistency charts, coach/recommendation surfaces, reviews, and settings. The demo account is `demo@dhruva.app` with password `DemoPass123!`.
 
 ## User preferences
 
@@ -38,7 +43,8 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Use `pnpm --filter @workspace/api-spec run codegen` after OpenAPI changes.
+- Use `pnpm --filter @workspace/db run push` after schema changes.
 
 ## Pointers
 
