@@ -1,1 +1,2 @@
 - [Generated client compatibility](generated-client-compatibility.md) — keep DOM iterable types enabled and avoid Orval delete-parameter collisions.
+- [Vite artifact build environment](vite-artifact-build-env.md) — direct production builds need the artifact's configured `PORT` and `BASE_PATH`.

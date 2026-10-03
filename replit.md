@@ -1,6 +1,6 @@
-# Dhruva
+# ASTALY
 
-Dhruva is an AI-powered consistency operating system for goals, habits, daily tasks, and data-grounded coaching.
+ASTALY is an AI-powered consistency operating system for goals, habits, daily tasks, and data-grounded coaching.
 
 ## Run & Operate
 
@@ -35,7 +35,7 @@ Dhruva is an AI-powered consistency operating system for goals, habits, daily ta
 
 ## Product
 
-Dhruva includes marketing, auth, onboarding, Today, task views, habit and goal management, consistency charts, coach/recommendation surfaces, reviews, and settings. The demo account is `demo@dhruva.app` with password `DemoPass123!`.
+ASTALY includes marketing, auth, onboarding, Today, task views, habit and goal management, consistency charts, coach/recommendation surfaces, reviews, and settings. The demo account remains `demo@dhruva.app` with password `DemoPass123!`.
 
 ## User preferences
 

@@ -73,7 +73,11 @@ async function currentUser(id: string) {
 
 async function ensureDemoAccount() {
   const existing = await pool.query(`SELECT id FROM users WHERE email = $1`, ["demo@dhruva.app"]);
-  if (existing.rows[0]) return existing.rows[0].id as string;
+  if (existing.rows[0]) {
+    const id = existing.rows[0].id as string;
+    await pool.query(`UPDATE profiles SET display_name = 'ASTALY Demo' WHERE user_id = $1 AND display_name = 'Dhruva Demo'`, [id]);
+    return id;
+  }
   const passwordHash = await bcrypt.hash("DemoPass123!", 12);
   const user = await pool.query(
     `INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id`,
@@ -82,7 +86,7 @@ async function ensureDemoAccount() {
   const id = user.rows[0].id as string;
   await pool.query(
     `INSERT INTO profiles (user_id, display_name, timezone, onboarding_completed, north_star)
-     VALUES ($1, 'Dhruva Demo', 'Asia/Calcutta', true, 'Become the person who follows through')`,
+     VALUES ($1, 'ASTALY Demo', 'Asia/Calcutta', true, 'Become the person who follows through')`,
     [id],
   );
   const domainIds: string[] = [];
