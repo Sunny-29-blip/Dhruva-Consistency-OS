@@ -876,3 +876,324 @@ export const DismissRecommendationResponse = zod.object({
 })
 
 
+export const ListNotebooksResponseItem = zod.object({
+  "id": zod.string().uuid(),
+  "title": zod.string(),
+  "description": zod.string().nullable(),
+  "icon": zod.string(),
+  "color": zod.string().nullable(),
+  "category": zod.string().nullable(),
+  "visibility": zod.enum(['private']),
+  "isArchived": zod.boolean(),
+  "notesCount": zod.number().int(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListNotebooksResponse = zod.array(ListNotebooksResponseItem)
+
+
+export const createNotebookBodyTitleMax = 100;
+
+export const createNotebookBodyDescriptionMax = 500;
+
+export const createNotebookBodyIconMax = 40;
+
+export const createNotebookBodyColorMax = 32;
+
+export const createNotebookBodyCategoryMax = 60;
+
+
+
+export const CreateNotebookBody = zod.object({
+  "title": zod.string().min(1).max(createNotebookBodyTitleMax),
+  "description": zod.string().max(createNotebookBodyDescriptionMax).nullish(),
+  "icon": zod.string().max(createNotebookBodyIconMax).optional(),
+  "color": zod.string().max(createNotebookBodyColorMax).nullish(),
+  "category": zod.string().max(createNotebookBodyCategoryMax).nullish()
+})
+
+export const CreateNotebookResponse = zod.object({
+  "id": zod.string().uuid(),
+  "title": zod.string(),
+  "description": zod.string().nullable(),
+  "icon": zod.string(),
+  "color": zod.string().nullable(),
+  "category": zod.string().nullable(),
+  "visibility": zod.enum(['private']),
+  "isArchived": zod.boolean(),
+  "notesCount": zod.number().int(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+export const UpdateNotebookParams = zod.object({
+  "id": zod.coerce.string().uuid()
+})
+
+export const updateNotebookBodyTitleMax = 100;
+
+export const updateNotebookBodyDescriptionMax = 500;
+
+export const updateNotebookBodyIconMax = 40;
+
+export const updateNotebookBodyColorMax = 32;
+
+export const updateNotebookBodyCategoryMax = 60;
+
+
+
+export const UpdateNotebookBody = zod.object({
+  "title": zod.string().min(1).max(updateNotebookBodyTitleMax).optional(),
+  "description": zod.string().max(updateNotebookBodyDescriptionMax).nullish(),
+  "icon": zod.string().max(updateNotebookBodyIconMax).optional(),
+  "color": zod.string().max(updateNotebookBodyColorMax).nullish(),
+  "category": zod.string().max(updateNotebookBodyCategoryMax).nullish(),
+  "isArchived": zod.boolean().optional()
+})
+
+export const UpdateNotebookResponse = zod.object({
+  "id": zod.string().uuid(),
+  "title": zod.string(),
+  "description": zod.string().nullable(),
+  "icon": zod.string(),
+  "color": zod.string().nullable(),
+  "category": zod.string().nullable(),
+  "visibility": zod.enum(['private']),
+  "isArchived": zod.boolean(),
+  "notesCount": zod.number().int(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+export const listNotesQuerySearchMax = 120;
+
+export const listNotesQueryIncludeArchivedDefault = false;
+
+export const ListNotesQueryParams = zod.object({
+  "notebookId": zod.coerce.string().uuid().optional(),
+  "kind": zod.enum(['note', 'idea']).optional(),
+  "search": zod.coerce.string().max(listNotesQuerySearchMax).optional(),
+  "includeArchived": zod.coerce.boolean().default(listNotesQueryIncludeArchivedDefault)
+})
+
+export const ListNotesResponseItem = zod.object({
+  "id": zod.string().uuid(),
+  "notebookId": zod.string().uuid(),
+  "notebookTitle": zod.string(),
+  "title": zod.string(),
+  "content": zod.string().nullable(),
+  "kind": zod.enum(['note', 'idea']),
+  "tags": zod.array(zod.string()),
+  "category": zod.string().nullable(),
+  "status": zod.enum(['captured', 'exploring', 'validating', 'in_progress', 'archived']),
+  "problem": zod.string().nullable(),
+  "audience": zod.string().nullable(),
+  "proposedSolution": zod.string().nullable(),
+  "potentialValue": zod.string().nullable(),
+  "openQuestions": zod.string().nullable(),
+  "nextActions": zod.string().nullable(),
+  "visibility": zod.enum(['private']),
+  "pinned": zod.boolean(),
+  "isArchived": zod.boolean(),
+  "publishedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListNotesResponse = zod.array(ListNotesResponseItem)
+
+
+export const createNoteBodyTitleMax = 180;
+
+export const createNoteBodyContentMax = 50000;
+
+export const createNoteBodyTagsItemMax = 40;
+
+export const createNoteBodyTagsMax = 12;
+
+export const createNoteBodyCategoryMax = 60;
+
+export const createNoteBodyProblemMax = 4000;
+
+export const createNoteBodyAudienceMax = 1000;
+
+export const createNoteBodyProposedSolutionMax = 4000;
+
+export const createNoteBodyPotentialValueMax = 2000;
+
+export const createNoteBodyOpenQuestionsMax = 4000;
+
+export const createNoteBodyNextActionsMax = 2000;
+
+
+
+export const CreateNoteBody = zod.object({
+  "notebookId": zod.string().uuid(),
+  "title": zod.string().min(1).max(createNoteBodyTitleMax),
+  "content": zod.string().max(createNoteBodyContentMax).nullish(),
+  "kind": zod.enum(['note', 'idea']),
+  "tags": zod.array(zod.string().min(1).max(createNoteBodyTagsItemMax)).max(createNoteBodyTagsMax).optional(),
+  "category": zod.string().max(createNoteBodyCategoryMax).nullish(),
+  "status": zod.enum(['captured', 'exploring', 'validating', 'in_progress', 'archived']).optional(),
+  "problem": zod.string().max(createNoteBodyProblemMax).nullish(),
+  "audience": zod.string().max(createNoteBodyAudienceMax).nullish(),
+  "proposedSolution": zod.string().max(createNoteBodyProposedSolutionMax).nullish(),
+  "potentialValue": zod.string().max(createNoteBodyPotentialValueMax).nullish(),
+  "openQuestions": zod.string().max(createNoteBodyOpenQuestionsMax).nullish(),
+  "nextActions": zod.string().max(createNoteBodyNextActionsMax).nullish()
+})
+
+export const CreateNoteResponse = zod.object({
+  "id": zod.string().uuid(),
+  "notebookId": zod.string().uuid(),
+  "notebookTitle": zod.string(),
+  "title": zod.string(),
+  "content": zod.string().nullable(),
+  "kind": zod.enum(['note', 'idea']),
+  "tags": zod.array(zod.string()),
+  "category": zod.string().nullable(),
+  "status": zod.enum(['captured', 'exploring', 'validating', 'in_progress', 'archived']),
+  "problem": zod.string().nullable(),
+  "audience": zod.string().nullable(),
+  "proposedSolution": zod.string().nullable(),
+  "potentialValue": zod.string().nullable(),
+  "openQuestions": zod.string().nullable(),
+  "nextActions": zod.string().nullable(),
+  "visibility": zod.enum(['private']),
+  "pinned": zod.boolean(),
+  "isArchived": zod.boolean(),
+  "publishedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+export const GetNoteParams = zod.object({
+  "id": zod.coerce.string().uuid()
+})
+
+export const GetNoteResponse = zod.object({
+  "id": zod.string().uuid(),
+  "notebookId": zod.string().uuid(),
+  "notebookTitle": zod.string(),
+  "title": zod.string(),
+  "content": zod.string().nullable(),
+  "kind": zod.enum(['note', 'idea']),
+  "tags": zod.array(zod.string()),
+  "category": zod.string().nullable(),
+  "status": zod.enum(['captured', 'exploring', 'validating', 'in_progress', 'archived']),
+  "problem": zod.string().nullable(),
+  "audience": zod.string().nullable(),
+  "proposedSolution": zod.string().nullable(),
+  "potentialValue": zod.string().nullable(),
+  "openQuestions": zod.string().nullable(),
+  "nextActions": zod.string().nullable(),
+  "visibility": zod.enum(['private']),
+  "pinned": zod.boolean(),
+  "isArchived": zod.boolean(),
+  "publishedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+export const UpdateNoteParams = zod.object({
+  "id": zod.coerce.string().uuid()
+})
+
+export const updateNoteBodyTitleMax = 180;
+
+export const updateNoteBodyContentMax = 50000;
+
+export const updateNoteBodyTagsItemMax = 40;
+
+export const updateNoteBodyTagsMax = 12;
+
+export const updateNoteBodyCategoryMax = 60;
+
+export const updateNoteBodyProblemMax = 4000;
+
+export const updateNoteBodyAudienceMax = 1000;
+
+export const updateNoteBodyProposedSolutionMax = 4000;
+
+export const updateNoteBodyPotentialValueMax = 2000;
+
+export const updateNoteBodyOpenQuestionsMax = 4000;
+
+export const updateNoteBodyNextActionsMax = 2000;
+
+
+
+export const UpdateNoteBody = zod.object({
+  "notebookId": zod.string().uuid().optional(),
+  "title": zod.string().min(1).max(updateNoteBodyTitleMax).optional(),
+  "content": zod.string().max(updateNoteBodyContentMax).nullish(),
+  "tags": zod.array(zod.string().min(1).max(updateNoteBodyTagsItemMax)).max(updateNoteBodyTagsMax).optional(),
+  "category": zod.string().max(updateNoteBodyCategoryMax).nullish(),
+  "status": zod.enum(['captured', 'exploring', 'validating', 'in_progress', 'archived']).optional(),
+  "problem": zod.string().max(updateNoteBodyProblemMax).nullish(),
+  "audience": zod.string().max(updateNoteBodyAudienceMax).nullish(),
+  "proposedSolution": zod.string().max(updateNoteBodyProposedSolutionMax).nullish(),
+  "potentialValue": zod.string().max(updateNoteBodyPotentialValueMax).nullish(),
+  "openQuestions": zod.string().max(updateNoteBodyOpenQuestionsMax).nullish(),
+  "nextActions": zod.string().max(updateNoteBodyNextActionsMax).nullish(),
+  "pinned": zod.boolean().optional(),
+  "isArchived": zod.boolean().optional()
+})
+
+export const UpdateNoteResponse = zod.object({
+  "id": zod.string().uuid(),
+  "notebookId": zod.string().uuid(),
+  "notebookTitle": zod.string(),
+  "title": zod.string(),
+  "content": zod.string().nullable(),
+  "kind": zod.enum(['note', 'idea']),
+  "tags": zod.array(zod.string()),
+  "category": zod.string().nullable(),
+  "status": zod.enum(['captured', 'exploring', 'validating', 'in_progress', 'archived']),
+  "problem": zod.string().nullable(),
+  "audience": zod.string().nullable(),
+  "proposedSolution": zod.string().nullable(),
+  "potentialValue": zod.string().nullable(),
+  "openQuestions": zod.string().nullable(),
+  "nextActions": zod.string().nullable(),
+  "visibility": zod.enum(['private']),
+  "pinned": zod.boolean(),
+  "isArchived": zod.boolean(),
+  "publishedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+export const ArchiveNoteParams = zod.object({
+  "id": zod.coerce.string().uuid()
+})
+
+export const ArchiveNoteResponse = zod.object({
+  "id": zod.string().uuid(),
+  "notebookId": zod.string().uuid(),
+  "notebookTitle": zod.string(),
+  "title": zod.string(),
+  "content": zod.string().nullable(),
+  "kind": zod.enum(['note', 'idea']),
+  "tags": zod.array(zod.string()),
+  "category": zod.string().nullable(),
+  "status": zod.enum(['captured', 'exploring', 'validating', 'in_progress', 'archived']),
+  "problem": zod.string().nullable(),
+  "audience": zod.string().nullable(),
+  "proposedSolution": zod.string().nullable(),
+  "potentialValue": zod.string().nullable(),
+  "openQuestions": zod.string().nullable(),
+  "nextActions": zod.string().nullable(),
+  "visibility": zod.enum(['private']),
+  "pinned": zod.boolean(),
+  "isArchived": zod.boolean(),
+  "publishedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+

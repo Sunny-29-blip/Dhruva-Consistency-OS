@@ -40,11 +40,19 @@ import type {
   HabitUpdate,
   HealthStatus,
   HeatmapCell,
+  IdeationItem,
+  IdeationItemInput,
+  IdeationItemUpdate,
   ListHabitsParams,
+  ListNotesParams,
   ListTodosParams,
   LoginInput,
   MoodInput,
   MoodLog,
+  NotFoundResponse,
+  Notebook,
+  NotebookInput,
+  NotebookUpdate,
   OnboardingInput,
   OnboardingResult,
   Profile,
@@ -2584,5 +2592,623 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getDismissRecommendationMutationOptions(options));
+    }
+
+export const getListNotebooksUrl = () => {
+
+
+
+
+  return `/api/notebooks`
+}
+
+export const listNotebooks = async ( options?: Parameters<typeof customFetch>[1]): Promise<Notebook[]> => {
+
+  return customFetch<Notebook[]>(getListNotebooksUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListNotebooksQueryKey = () => {
+    return [
+    `/api/notebooks`
+    ] as const;
+    }
+
+
+export const getListNotebooksQueryOptions = <TData = Awaited<ReturnType<typeof listNotebooks>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listNotebooks>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListNotebooksQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listNotebooks>>> = ({ signal }) => listNotebooks({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listNotebooks>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListNotebooksQueryResult = NonNullable<Awaited<ReturnType<typeof listNotebooks>>>
+export type ListNotebooksQueryError = ErrorType<unknown>
+
+
+
+export function useListNotebooks<TData = Awaited<ReturnType<typeof listNotebooks>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listNotebooks>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListNotebooksQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateNotebookUrl = () => {
+
+
+
+
+  return `/api/notebooks`
+}
+
+export const createNotebook = async (notebookInput: NotebookInput, options?: Parameters<typeof customFetch>[1]): Promise<Notebook> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<Notebook>(getCreateNotebookUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(notebookInput)
+  }
+);}
+
+
+
+
+
+export const getCreateNotebookMutationKey = () => ['createNotebook'] as const;
+
+export const getCreateNotebookMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createNotebook>>, TError,CreateNotebookMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createNotebook>>, TError,CreateNotebookMutationVariables, TContext> => {
+
+const mutationKey = getCreateNotebookMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createNotebook>>, CreateNotebookMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createNotebook(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateNotebookMutationResult = NonNullable<Awaited<ReturnType<typeof createNotebook>>>
+    export type CreateNotebookMutationBody = BodyType<NotebookInput>
+    export type CreateNotebookMutationError = ErrorType<unknown>
+    export type CreateNotebookMutationVariables = {data: BodyType<NotebookInput>}
+
+    export const useCreateNotebook = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createNotebook>>, TError,CreateNotebookMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createNotebook>>,
+        TError,
+        CreateNotebookMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateNotebookMutationOptions(options));
+    }
+
+export const getUpdateNotebookUrl = (id: string,) => {
+
+
+
+
+  return `/api/notebooks/${id}`
+}
+
+export const updateNotebook = async (id: string,
+    notebookUpdate: NotebookUpdate, options?: Parameters<typeof customFetch>[1]): Promise<Notebook> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<Notebook>(getUpdateNotebookUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(notebookUpdate)
+  }
+);}
+
+
+
+
+
+export const getUpdateNotebookMutationKey = () => ['updateNotebook'] as const;
+
+export const getUpdateNotebookMutationOptions = <TError = ErrorType<NotFoundResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateNotebook>>, TError,UpdateNotebookMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateNotebook>>, TError,UpdateNotebookMutationVariables, TContext> => {
+
+const mutationKey = getUpdateNotebookMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateNotebook>>, UpdateNotebookMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateNotebook(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateNotebookMutationResult = NonNullable<Awaited<ReturnType<typeof updateNotebook>>>
+    export type UpdateNotebookMutationBody = BodyType<NotebookUpdate>
+    export type UpdateNotebookMutationError = ErrorType<NotFoundResponse>
+    export type UpdateNotebookMutationVariables = {id: string;data: BodyType<NotebookUpdate>}
+
+    export const useUpdateNotebook = <TError = ErrorType<NotFoundResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateNotebook>>, TError,UpdateNotebookMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateNotebook>>,
+        TError,
+        UpdateNotebookMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateNotebookMutationOptions(options));
+    }
+
+export const getListNotesUrl = (params?: ListNotesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/notes?${stringifiedParams}` : `/api/notes`
+}
+
+export const listNotes = async (params?: ListNotesParams, options?: Parameters<typeof customFetch>[1]): Promise<IdeationItem[]> => {
+
+  return customFetch<IdeationItem[]>(getListNotesUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListNotesQueryKey = (params?: ListNotesParams,) => {
+    return [
+    `/api/notes`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListNotesQueryOptions = <TData = Awaited<ReturnType<typeof listNotes>>, TError = ErrorType<unknown>>(params?: ListNotesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listNotes>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListNotesQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listNotes>>> = ({ signal }) => listNotes(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listNotes>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListNotesQueryResult = NonNullable<Awaited<ReturnType<typeof listNotes>>>
+export type ListNotesQueryError = ErrorType<unknown>
+
+
+
+export function useListNotes<TData = Awaited<ReturnType<typeof listNotes>>, TError = ErrorType<unknown>>(
+ params?: ListNotesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listNotes>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListNotesQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateNoteUrl = () => {
+
+
+
+
+  return `/api/notes`
+}
+
+export const createNote = async (ideationItemInput: IdeationItemInput, options?: Parameters<typeof customFetch>[1]): Promise<IdeationItem> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<IdeationItem>(getCreateNoteUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(ideationItemInput)
+  }
+);}
+
+
+
+
+
+export const getCreateNoteMutationKey = () => ['createNote'] as const;
+
+export const getCreateNoteMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createNote>>, TError,CreateNoteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createNote>>, TError,CreateNoteMutationVariables, TContext> => {
+
+const mutationKey = getCreateNoteMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createNote>>, CreateNoteMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createNote(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateNoteMutationResult = NonNullable<Awaited<ReturnType<typeof createNote>>>
+    export type CreateNoteMutationBody = BodyType<IdeationItemInput>
+    export type CreateNoteMutationError = ErrorType<unknown>
+    export type CreateNoteMutationVariables = {data: BodyType<IdeationItemInput>}
+
+    export const useCreateNote = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createNote>>, TError,CreateNoteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createNote>>,
+        TError,
+        CreateNoteMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateNoteMutationOptions(options));
+    }
+
+export const getGetNoteUrl = (id: string,) => {
+
+
+
+
+  return `/api/notes/${id}`
+}
+
+export const getNote = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<IdeationItem> => {
+
+  return customFetch<IdeationItem>(getGetNoteUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetNoteQueryKey = (id: string,) => {
+    return [
+    `/api/notes/${id}`
+    ] as const;
+    }
+
+
+export const getGetNoteQueryOptions = <TData = Awaited<ReturnType<typeof getNote>>, TError = ErrorType<NotFoundResponse>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getNote>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetNoteQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getNote>>> = ({ signal }) => getNote(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getNote>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetNoteQueryResult = NonNullable<Awaited<ReturnType<typeof getNote>>>
+export type GetNoteQueryError = ErrorType<NotFoundResponse>
+
+
+
+export function useGetNote<TData = Awaited<ReturnType<typeof getNote>>, TError = ErrorType<NotFoundResponse>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getNote>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetNoteQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateNoteUrl = (id: string,) => {
+
+
+
+
+  return `/api/notes/${id}`
+}
+
+export const updateNote = async (id: string,
+    ideationItemUpdate: IdeationItemUpdate, options?: Parameters<typeof customFetch>[1]): Promise<IdeationItem> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<IdeationItem>(getUpdateNoteUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(ideationItemUpdate)
+  }
+);}
+
+
+
+
+
+export const getUpdateNoteMutationKey = () => ['updateNote'] as const;
+
+export const getUpdateNoteMutationOptions = <TError = ErrorType<NotFoundResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateNote>>, TError,UpdateNoteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateNote>>, TError,UpdateNoteMutationVariables, TContext> => {
+
+const mutationKey = getUpdateNoteMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateNote>>, UpdateNoteMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateNote(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateNoteMutationResult = NonNullable<Awaited<ReturnType<typeof updateNote>>>
+    export type UpdateNoteMutationBody = BodyType<IdeationItemUpdate>
+    export type UpdateNoteMutationError = ErrorType<NotFoundResponse>
+    export type UpdateNoteMutationVariables = {id: string;data: BodyType<IdeationItemUpdate>}
+
+    export const useUpdateNote = <TError = ErrorType<NotFoundResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateNote>>, TError,UpdateNoteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateNote>>,
+        TError,
+        UpdateNoteMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateNoteMutationOptions(options));
+    }
+
+export const getArchiveNoteUrl = (id: string,) => {
+
+
+
+
+  return `/api/notes/${id}/archive`
+}
+
+export const archiveNote = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<IdeationItem> => {
+
+  return customFetch<IdeationItem>(getArchiveNoteUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getArchiveNoteMutationKey = () => ['archiveNote'] as const;
+
+export const getArchiveNoteMutationOptions = <TError = ErrorType<NotFoundResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof archiveNote>>, TError,ArchiveNoteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof archiveNote>>, TError,ArchiveNoteMutationVariables, TContext> => {
+
+const mutationKey = getArchiveNoteMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof archiveNote>>, ArchiveNoteMutationVariables> = (props) => {
+          const {id} = props ?? {};
+
+          return  archiveNote(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ArchiveNoteMutationResult = NonNullable<Awaited<ReturnType<typeof archiveNote>>>
+
+    export type ArchiveNoteMutationError = ErrorType<NotFoundResponse>
+    export type ArchiveNoteMutationVariables = {id: string}
+
+    export const useArchiveNote = <TError = ErrorType<NotFoundResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof archiveNote>>, TError,ArchiveNoteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof archiveNote>>,
+        TError,
+        ArchiveNoteMutationVariables,
+        TContext
+      > => {
+      return useMutation(getArchiveNoteMutationOptions(options));
     }
 

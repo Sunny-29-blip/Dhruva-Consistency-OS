@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/reac
 import {
   ArrowRight, BarChart3, BrainCircuit, CalendarDays, Check, ChevronDown, ChevronRight,
   Circle, CircleHelp, Compass, Flame, FolderKanban, Goal as GoalIcon, HeartPulse, Home,
-  Inbox, ListTodo, LogOut, Menu, MessageCircle, Plus, RotateCcw, Settings, ShieldCheck,
+  Inbox, Lightbulb, ListTodo, LogOut, Menu, MessageCircle, Plus, RotateCcw, Settings, ShieldCheck,
   Sparkles, Target, TrendingUp, UserRound, Wind, Zap,
 } from 'lucide-react';
 import {
@@ -23,6 +23,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
+import Ideation from '@/pages/ideation';
 
 const queryClient = new QueryClient();
 const today = new Date().toISOString().slice(0, 10);
@@ -79,6 +80,7 @@ const navItems = [
   { href: '/app/upcoming', label: 'Upcoming', icon: CalendarDays },
   { href: '/app/habits', label: 'Habits', icon: Zap },
   { href: '/app/goals', label: 'Goals', icon: Target },
+  { href: '/app/ideation', label: 'Ideation', icon: Lightbulb },
 ];
 const moreItems = [
   { href: '/app/consistency', label: 'Consistency', icon: TrendingUp },
@@ -95,7 +97,7 @@ function AppShell({ children }: { children: ReactNode }) {
   const displayName = user.data?.displayName || 'there';
   const initials = displayName.split(' ').map((p) => p[0]).join('').slice(0, 2).toUpperCase();
   const doLogout = () => logout.mutate(undefined, { onSuccess: () => { window.location.href = '/'; } });
-  const nav = (item: typeof navItems[number]) => <Link href={item.href} onClick={() => setMobileOpen(false)} data-testid={`link-nav-${item.label.toLowerCase()}`}
+  const nav = (item: typeof navItems[number]) => <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)} data-testid={`link-nav-${item.label.toLowerCase()}`}
     className={cx('flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm transition', location === item.href || (!item.exact && location.startsWith(item.href + '/')) ? 'bg-[hsl(var(--sidebar-accent))] text-[hsl(var(--sidebar-foreground))] font-semibold' : 'text-[hsl(var(--sidebar-foreground)/.7)] hover:bg-[hsl(var(--sidebar-accent))] hover:text-[hsl(var(--sidebar-foreground))]')}>
     <item.icon className="h-[17px] w-[17px]" strokeWidth={1.8} /><span>{item.label}</span>{item.label === 'Inbox' && <span className="ml-auto rounded-full bg-[hsl(var(--sidebar-primary))] px-1.5 py-0.5 text-[10px] font-bold text-[hsl(var(--sidebar-primary-foreground))]">3</span>}</Link>;
   return <div className="grain flex min-h-[100dvh] bg-[hsl(var(--background))]">
@@ -108,7 +110,7 @@ function AppShell({ children }: { children: ReactNode }) {
       <div className="mt-auto border-t border-[hsl(var(--sidebar-border))] pt-4"><div className="flex items-center gap-3 rounded-2xl p-2"><span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[hsl(var(--sidebar-primary))] text-xs font-bold text-[hsl(var(--sidebar-primary-foreground))]">{initials || 'D'}</span><div className="min-w-0"><p className="truncate text-sm font-semibold text-[hsl(var(--sidebar-foreground))]">{displayName}</p><p className="text-xs text-[hsl(var(--sidebar-foreground)/.5)]">Finding your pace</p></div><button onClick={doLogout} data-testid="button-logout" className="ml-auto text-[hsl(var(--sidebar-foreground)/.5)] hover:text-[hsl(var(--sidebar-foreground))]"><LogOut className="h-4 w-4" /></button></div></div>
     </aside>
     {mobileOpen && <button aria-label="Close navigation" data-testid="button-close-navigation" onClick={() => setMobileOpen(false)} className="fixed inset-0 z-30 bg-[hsl(var(--foreground)/.35)] lg:hidden" />}
-    <main className="min-w-0 flex-1 lg:pl-[252px]"><header className="sticky top-0 z-20 flex h-[72px] items-center justify-between border-b border-[hsl(var(--border)/.7)] bg-[hsl(var(--background)/.9)] px-5 backdrop-blur-md lg:px-10"><button onClick={() => setMobileOpen(true)} data-testid="button-open-navigation" className="rounded-xl p-2 hover:bg-[hsl(var(--muted))] lg:hidden"><Menu className="h-5 w-5" /></button><div className="hidden text-sm text-[hsl(var(--muted-foreground))] lg:block">{location.includes('consistency') ? 'A longer view' : location.includes('coach') ? 'A second perspective' : 'Make today count'}</div><div className="ml-auto flex items-center gap-2"><span className="hidden rounded-full bg-[hsl(var(--accent)/.18)] px-3 py-1.5 text-xs font-semibold text-[hsl(var(--foreground))] sm:block"><span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-[hsl(var(--accent))]" />{user.isLoading ? 'Checking in…' : 'Steady mode'}</span><Link href="/app/settings" data-testid="link-header-profile" className="grid h-9 w-9 place-items-center rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--card))] text-xs font-bold">{initials || 'D'}</Link></div></header><div className="mx-auto max-w-[1280px] px-5 py-8 lg:px-10 lg:py-10">{children}</div></main>
+     <main className="min-w-0 flex-1 lg:pl-[252px]"><header className="sticky top-0 z-20 flex h-[72px] items-center justify-between border-b border-[hsl(var(--border)/.7)] bg-[hsl(var(--background)/.9)] px-5 backdrop-blur-md lg:px-10"><button onClick={() => setMobileOpen(true)} data-testid="button-open-navigation" className="rounded-xl p-2 hover:bg-[hsl(var(--muted))] lg:hidden"><Menu className="h-5 w-5" /></button><div className="hidden text-sm text-[hsl(var(--muted-foreground))] lg:block">{location.includes('ideation') ? 'A place to think privately' : location.includes('consistency') ? 'A longer view' : location.includes('coach') ? 'A second perspective' : 'Make today count'}</div><div className="ml-auto flex items-center gap-2"><span className="hidden rounded-full bg-[hsl(var(--accent)/.18)] px-3 py-1.5 text-xs font-semibold text-[hsl(var(--foreground))] sm:block"><span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-[hsl(var(--accent))]" />{user.isLoading ? 'Checking in…' : 'Steady mode'}</span><Link href="/app/settings" data-testid="link-header-profile" className="grid h-9 w-9 place-items-center rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--card))] text-xs font-bold">{initials || 'D'}</Link></div></header><div className="mx-auto max-w-[1280px] px-5 py-8 lg:px-10 lg:py-10">{children}</div></main>
   </div>;
 }
 
@@ -262,6 +264,7 @@ function Router() {
     <Route path="/" component={Landing} /><Route path="/login" component={Login} /><Route path="/register" component={Register} /><Route path="/onboarding" component={Onboarding} />
     <Route path="/app" component={() => <Private><Today /></Private>} /><Route path="/app/inbox" component={() => <Private><TodoView view="inbox" title="Inbox" description="Catch everything before it asks to be remembered." /></Private>} /><Route path="/app/upcoming" component={() => <Private><TodoView view="upcoming" title="Upcoming" description="A little visibility for the days ahead." /></Private>} />
     <Route path="/app/habits" component={() => <Private><Habits /></Private>} /><Route path="/app/habits/:id" component={() => <Private><HabitDetail /></Private>} /><Route path="/app/goals" component={() => <Private><Goals /></Private>} /><Route path="/app/goals/:id" component={() => <Private><GoalDetail /></Private>} />
+    <Route path="/app/ideation" component={() => <Private><Ideation /></Private>} />
     <Route path="/app/consistency" component={() => <Private><Consistency /></Private>} /><Route path="/app/coach" component={() => <Private><Coach /></Private>} /><Route path="/app/reviews" component={() => <Private><Reviews /></Private>} /><Route path="/app/settings" component={() => <Private><SettingsPage /></Private>} />
     <Route component={NotFound} />
   </Switch></RoutedErrorBoundary>;

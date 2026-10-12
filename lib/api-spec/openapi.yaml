@@ -511,6 +511,132 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Recommendation"
+  /notebooks:
+    get:
+      operationId: listNotebooks
+      tags: [ideation]
+      responses:
+        "200":
+          description: User-owned notebooks
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Notebook" }
+    post:
+      operationId: createNotebook
+      tags: [ideation]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/NotebookInput" }
+      responses:
+        "201":
+          description: Created notebook
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Notebook" }
+  /notebooks/{id}:
+    patch:
+      operationId: updateNotebook
+      tags: [ideation]
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/NotebookUpdate" }
+      responses:
+        "200":
+          description: Updated notebook
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Notebook" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /notes:
+    get:
+      operationId: listNotes
+      tags: [ideation]
+      parameters:
+        - name: notebookId
+          in: query
+          schema: { type: string, format: uuid }
+        - name: kind
+          in: query
+          schema: { type: string, enum: [note, idea] }
+        - name: search
+          in: query
+          schema: { type: string, maxLength: 120 }
+        - name: includeArchived
+          in: query
+          schema: { type: boolean, default: false }
+      responses:
+        "200":
+          description: User-owned notes and ideas
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/IdeationItem" }
+    post:
+      operationId: createNote
+      tags: [ideation]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/IdeationItemInput" }
+      responses:
+        "201":
+          description: Created note or idea
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/IdeationItem" }
+  /notes/{id}:
+    get:
+      operationId: getNote
+      tags: [ideation]
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: User-owned note or idea
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/IdeationItem" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      operationId: updateNote
+      tags: [ideation]
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/IdeationItemUpdate" }
+      responses:
+        "200":
+          description: Updated note or idea
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/IdeationItem" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /notes/{id}/archive:
+    post:
+      operationId: archiveNote
+      tags: [ideation]
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Archived note or idea
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/IdeationItem" }
+        "404": { $ref: "#/components/responses/NotFound" }
 components:
   parameters:
     Id:
@@ -523,6 +649,12 @@ components:
   responses:
     Unauthenticated:
       description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: Resource not found
       content:
         application/json:
           schema:
@@ -898,4 +1030,104 @@ components:
         payload:
           type: object
           additionalProperties: true
+    Notebook:
+      type: object
+      required: [id, title, description, icon, color, category, visibility, isArchived, notesCount, createdAt, updatedAt]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        description: { type: ["string", "null"] }
+        icon: { type: string }
+        color: { type: ["string", "null"] }
+        category: { type: ["string", "null"] }
+        visibility: { type: string, enum: [private] }
+        isArchived: { type: boolean }
+        notesCount: { type: integer }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    NotebookInput:
+      type: object
+      required: [title]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 100 }
+        description: { type: ["string", "null"], maxLength: 500 }
+        icon: { type: string, maxLength: 40 }
+        color: { type: ["string", "null"], maxLength: 32 }
+        category: { type: ["string", "null"], maxLength: 60 }
+    NotebookUpdate:
+      type: object
+      properties:
+        title: { type: string, minLength: 1, maxLength: 100 }
+        description: { type: ["string", "null"], maxLength: 500 }
+        icon: { type: string, maxLength: 40 }
+        color: { type: ["string", "null"], maxLength: 32 }
+        category: { type: ["string", "null"], maxLength: 60 }
+        isArchived: { type: boolean }
+    IdeationItem:
+      type: object
+      required: [id, notebookId, notebookTitle, title, content, kind, tags, category, status, problem, audience, proposedSolution, potentialValue, openQuestions, nextActions, visibility, pinned, isArchived, publishedAt, createdAt, updatedAt]
+      properties:
+        id: { type: string, format: uuid }
+        notebookId: { type: string, format: uuid }
+        notebookTitle: { type: string }
+        title: { type: string }
+        content: { type: ["string", "null"] }
+        kind: { type: string, enum: [note, idea] }
+        tags:
+          type: array
+          items: { type: string }
+        category: { type: ["string", "null"] }
+        status: { type: string, enum: [captured, exploring, validating, in_progress, archived] }
+        problem: { type: ["string", "null"] }
+        audience: { type: ["string", "null"] }
+        proposedSolution: { type: ["string", "null"] }
+        potentialValue: { type: ["string", "null"] }
+        openQuestions: { type: ["string", "null"] }
+        nextActions: { type: ["string", "null"] }
+        visibility: { type: string, enum: [private] }
+        pinned: { type: boolean }
+        isArchived: { type: boolean }
+        publishedAt: { type: ["string", "null"], format: date-time }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    IdeationItemInput:
+      type: object
+      required: [notebookId, title, kind]
+      properties:
+        notebookId: { type: string, format: uuid }
+        title: { type: string, minLength: 1, maxLength: 180 }
+        content: { type: ["string", "null"], maxLength: 50000 }
+        kind: { type: string, enum: [note, idea] }
+        tags:
+          type: array
+          maxItems: 12
+          items: { type: string, minLength: 1, maxLength: 40 }
+        category: { type: ["string", "null"], maxLength: 60 }
+        status: { type: string, enum: [captured, exploring, validating, in_progress, archived] }
+        problem: { type: ["string", "null"], maxLength: 4000 }
+        audience: { type: ["string", "null"], maxLength: 1000 }
+        proposedSolution: { type: ["string", "null"], maxLength: 4000 }
+        potentialValue: { type: ["string", "null"], maxLength: 2000 }
+        openQuestions: { type: ["string", "null"], maxLength: 4000 }
+        nextActions: { type: ["string", "null"], maxLength: 2000 }
+    IdeationItemUpdate:
+      type: object
+      properties:
+        notebookId: { type: string, format: uuid }
+        title: { type: string, minLength: 1, maxLength: 180 }
+        content: { type: ["string", "null"], maxLength: 50000 }
+        tags:
+          type: array
+          maxItems: 12
+          items: { type: string, minLength: 1, maxLength: 40 }
+        category: { type: ["string", "null"], maxLength: 60 }
+        status: { type: string, enum: [captured, exploring, validating, in_progress, archived] }
+        problem: { type: ["string", "null"], maxLength: 4000 }
+        audience: { type: ["string", "null"], maxLength: 1000 }
+        proposedSolution: { type: ["string", "null"], maxLength: 4000 }
+        potentialValue: { type: ["string", "null"], maxLength: 2000 }
+        openQuestions: { type: ["string", "null"], maxLength: 4000 }
+        nextActions: { type: ["string", "null"], maxLength: 2000 }
+        pinned: { type: boolean }
+        isArchived: { type: boolean }
 

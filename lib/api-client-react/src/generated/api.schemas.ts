@@ -643,10 +643,294 @@ export interface Recommendation {
   payload: RecommendationPayload;
 }
 
+export type NotebookVisibility = typeof NotebookVisibility[keyof typeof NotebookVisibility];
+
+
+export const NotebookVisibility = {
+  private: 'private',
+} as const;
+
+export interface Notebook {
+  id: string;
+  title: string;
+  /** @nullable */
+  description: string | null;
+  icon: string;
+  /** @nullable */
+  color: string | null;
+  /** @nullable */
+  category: string | null;
+  visibility: NotebookVisibility;
+  isArchived: boolean;
+  notesCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface NotebookInput {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  title: string;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  description?: string | null;
+  /** @maxLength 40 */
+  icon?: string;
+  /**
+     * @maxLength 32
+     * @nullable
+     */
+  color?: string | null;
+  /**
+     * @maxLength 60
+     * @nullable
+     */
+  category?: string | null;
+}
+
+export interface NotebookUpdate {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  title?: string;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  description?: string | null;
+  /** @maxLength 40 */
+  icon?: string;
+  /**
+     * @maxLength 32
+     * @nullable
+     */
+  color?: string | null;
+  /**
+     * @maxLength 60
+     * @nullable
+     */
+  category?: string | null;
+  isArchived?: boolean;
+}
+
+export type IdeationItemKind = typeof IdeationItemKind[keyof typeof IdeationItemKind];
+
+
+export const IdeationItemKind = {
+  note: 'note',
+  idea: 'idea',
+} as const;
+
+export type IdeationItemStatus = typeof IdeationItemStatus[keyof typeof IdeationItemStatus];
+
+
+export const IdeationItemStatus = {
+  captured: 'captured',
+  exploring: 'exploring',
+  validating: 'validating',
+  in_progress: 'in_progress',
+  archived: 'archived',
+} as const;
+
+export type IdeationItemVisibility = typeof IdeationItemVisibility[keyof typeof IdeationItemVisibility];
+
+
+export const IdeationItemVisibility = {
+  private: 'private',
+} as const;
+
+export interface IdeationItem {
+  id: string;
+  notebookId: string;
+  notebookTitle: string;
+  title: string;
+  /** @nullable */
+  content: string | null;
+  kind: IdeationItemKind;
+  tags: string[];
+  /** @nullable */
+  category: string | null;
+  status: IdeationItemStatus;
+  /** @nullable */
+  problem: string | null;
+  /** @nullable */
+  audience: string | null;
+  /** @nullable */
+  proposedSolution: string | null;
+  /** @nullable */
+  potentialValue: string | null;
+  /** @nullable */
+  openQuestions: string | null;
+  /** @nullable */
+  nextActions: string | null;
+  visibility: IdeationItemVisibility;
+  pinned: boolean;
+  isArchived: boolean;
+  /** @nullable */
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type IdeationItemInputKind = typeof IdeationItemInputKind[keyof typeof IdeationItemInputKind];
+
+
+export const IdeationItemInputKind = {
+  note: 'note',
+  idea: 'idea',
+} as const;
+
+export type IdeationItemInputStatus = typeof IdeationItemInputStatus[keyof typeof IdeationItemInputStatus];
+
+
+export const IdeationItemInputStatus = {
+  captured: 'captured',
+  exploring: 'exploring',
+  validating: 'validating',
+  in_progress: 'in_progress',
+  archived: 'archived',
+} as const;
+
+export interface IdeationItemInput {
+  notebookId: string;
+  /**
+     * @minLength 1
+     * @maxLength 180
+     */
+  title: string;
+  /**
+     * @maxLength 50000
+     * @nullable
+     */
+  content?: string | null;
+  kind: IdeationItemInputKind;
+  /**
+     * @maxItems 12
+     * @items.minLength 1
+     * @items.maxLength 40
+     */
+  tags?: string[];
+  /**
+     * @maxLength 60
+     * @nullable
+     */
+  category?: string | null;
+  status?: IdeationItemInputStatus;
+  /**
+     * @maxLength 4000
+     * @nullable
+     */
+  problem?: string | null;
+  /**
+     * @maxLength 1000
+     * @nullable
+     */
+  audience?: string | null;
+  /**
+     * @maxLength 4000
+     * @nullable
+     */
+  proposedSolution?: string | null;
+  /**
+     * @maxLength 2000
+     * @nullable
+     */
+  potentialValue?: string | null;
+  /**
+     * @maxLength 4000
+     * @nullable
+     */
+  openQuestions?: string | null;
+  /**
+     * @maxLength 2000
+     * @nullable
+     */
+  nextActions?: string | null;
+}
+
+export type IdeationItemUpdateStatus = typeof IdeationItemUpdateStatus[keyof typeof IdeationItemUpdateStatus];
+
+
+export const IdeationItemUpdateStatus = {
+  captured: 'captured',
+  exploring: 'exploring',
+  validating: 'validating',
+  in_progress: 'in_progress',
+  archived: 'archived',
+} as const;
+
+export interface IdeationItemUpdate {
+  notebookId?: string;
+  /**
+     * @minLength 1
+     * @maxLength 180
+     */
+  title?: string;
+  /**
+     * @maxLength 50000
+     * @nullable
+     */
+  content?: string | null;
+  /**
+     * @maxItems 12
+     * @items.minLength 1
+     * @items.maxLength 40
+     */
+  tags?: string[];
+  /**
+     * @maxLength 60
+     * @nullable
+     */
+  category?: string | null;
+  status?: IdeationItemUpdateStatus;
+  /**
+     * @maxLength 4000
+     * @nullable
+     */
+  problem?: string | null;
+  /**
+     * @maxLength 1000
+     * @nullable
+     */
+  audience?: string | null;
+  /**
+     * @maxLength 4000
+     * @nullable
+     */
+  proposedSolution?: string | null;
+  /**
+     * @maxLength 2000
+     * @nullable
+     */
+  potentialValue?: string | null;
+  /**
+     * @maxLength 4000
+     * @nullable
+     */
+  openQuestions?: string | null;
+  /**
+     * @maxLength 2000
+     * @nullable
+     */
+  nextActions?: string | null;
+  pinned?: boolean;
+  isArchived?: boolean;
+}
+
 /**
  * Authentication required
  */
 export type UnauthenticatedResponse = ErrorResponse;
+
+/**
+ * Resource not found
+ */
+export type NotFoundResponse = ErrorResponse;
 
 export type ListHabitsParams = {
 archived?: boolean;
@@ -677,5 +961,23 @@ export type GetStatsTrendDays = typeof GetStatsTrendDays[keyof typeof GetStatsTr
 export const GetStatsTrendDays = {
   NUMBER_30: 30,
   NUMBER_90: 90,
+} as const;
+
+export type ListNotesParams = {
+notebookId?: string;
+kind?: ListNotesKind;
+/**
+ * @maxLength 120
+ */
+search?: string;
+includeArchived?: boolean;
+};
+
+export type ListNotesKind = typeof ListNotesKind[keyof typeof ListNotesKind];
+
+
+export const ListNotesKind = {
+  note: 'note',
+  idea: 'idea',
 } as const;
 
